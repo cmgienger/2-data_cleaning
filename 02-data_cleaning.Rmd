@@ -129,6 +129,7 @@ Obviously it is some great data, but it has several formatting issues R will not
 
 -   Headers describing what the data are and who collected it ('meta-data' type info).
 -   Column titles are all over the place; capitalization, spaces, punctuation, etc.
+-  Unexpected "~"character in "Mass (g)" column
 -   Empty columns and rows
 
 <br>
@@ -172,7 +173,9 @@ data_CochiseCoGila <- data_CochiseCoGila %>%
     date = ymd(date),
     hour = hour(time),
     time = hms::as_hms(time),  # Convert POSIXct datetime to time-of-day
-    month_cat = factor(month(date, label = TRUE, abbr = TRUE))
+    month_cat = factor(month(date, label = TRUE, abbr = TRUE)), # make month an ordered factor
+    mass = str_remove_all(mass, "[^0-9\\.]+"),   # remove everything except digits and decimal points
+    mass = as.numeric(mass)                       # convert to numeric
   )
 
 data_CochiseCoGila$lon <- data_CochiseCoGila$lon*-1 #convert longitude to negative number for plotting
